@@ -31,7 +31,9 @@ export class ServerlessStack extends Stack {
       handler: 'index.handler',
       environment: {
         DB_HOST: dbStack.postgres.dbInstanceEndpointAddress,
+        DB_PORT: dbStack.postgres.dbInstanceEndpointPort,
         DB_SECRET: dbStack.postgres.secret.secretArn,
+        DB_NAME: 'workshop',
       },
       vpc: dbStack.vpc,
     });
