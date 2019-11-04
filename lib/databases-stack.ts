@@ -1,4 +1,4 @@
-import { Stack, Construct } from '@aws-cdk/core';
+import { Stack, Construct, RemovalPolicy } from '@aws-cdk/core';
 import { Table, BillingMode, AttributeType } from '@aws-cdk/aws-dynamodb';
 import { DatabaseInstance, DatabaseInstanceEngine } from '@aws-cdk/aws-rds';
 import { CfnDBInstance, CfnDBCluster, CfnDBSubnetGroup } from '@aws-cdk/aws-docdb';
@@ -26,6 +26,7 @@ export class DatabasesStack extends Stack {
         name: 'id',
         type: AttributeType.STRING,
       },
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
     this.postgres = new DatabaseInstance(this, 'Postgres', {
@@ -36,6 +37,7 @@ export class DatabasesStack extends Stack {
       instanceClass: InstanceType.of(InstanceClass.T3, InstanceSize.MICRO),
       masterUsername: 'master',
       vpc: this.vpc,
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
     if (!this.postgres.secret) {
