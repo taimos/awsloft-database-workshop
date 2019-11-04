@@ -21,29 +21,18 @@ export class DatabasesStack extends Stack {
     });
 
     this.dynamoDbTable = new Table(this, 'DynamoDB', {
-      billingMode: BillingMode.PAY_PER_REQUEST,
-      partitionKey: {
-        name: 'id',
-        type: AttributeType.STRING,
-      },
+      // TODO
       removalPolicy: RemovalPolicy.DESTROY,
     });
 
     this.postgres = new DatabaseInstance(this, 'Postgres', {
-      allocatedStorage: 5,
-      databaseName: 'workshop',
-      engine: DatabaseInstanceEngine.POSTGRES,
-      engineVersion: '11.5',
-      instanceClass: InstanceType.of(InstanceClass.T3, InstanceSize.MICRO),
-      masterUsername: 'master',
-      vpc: this.vpc,
+      // TODO
       removalPolicy: RemovalPolicy.DESTROY,
     });
 
     if (!this.postgres.secret) {
       throw 'invalid config';
     }
-
 
     this.docSG = new SecurityGroup(this, 'DocSG', {
       vpc: this.vpc,
@@ -53,21 +42,15 @@ export class DatabasesStack extends Stack {
 
     const subnets = new CfnDBSubnetGroup(this, 'DocDBSubnets', {
       dbSubnetGroupDescription: 'Subnet group for DocumentDB',
-      subnetIds: this.vpc.privateSubnets.map(subnet => subnet.subnetId),
+      subnetIds: // TODO
     });
 
     this.docCluster = new CfnDBCluster(this, 'DocDBCluster', {
-      vpcSecurityGroupIds: [this.docSG.securityGroupId],
-      dbSubnetGroupName: subnets.ref,
-      availabilityZones: this.vpc.availabilityZones,
-      masterUsername: this.postgres.secret.secretValueFromJson('username').toString(),
-      masterUserPassword: this.postgres.secret.secretValueFromJson('password').toString(),
+      // TODO
     });
 
     new CfnDBInstance(this, 'Instance', {
-      dbClusterIdentifier: this.docCluster.ref,
-      availabilityZone: this.vpc.availabilityZones[0],
-      dbInstanceClass: 'db.r5.large',
+      // TODO
     });
 
   }

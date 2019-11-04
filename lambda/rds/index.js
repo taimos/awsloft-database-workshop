@@ -6,16 +6,7 @@ let client;
 async function initClient(context) {
     context.callbackWaitsForEmptyEventLoop = false;
     if (!client) {
-        const secret = await new SecretsManager().getSecretValue({SecretId: process.env.DB_SECRET}).promise();
-        const values = JSON.parse(secret.SecretString);
-        client = new Client({
-            host: process.env.DB_HOST,
-            user: values.username,
-            port: process.env.DB_PORT,
-            password: values.password,
-            database: process.env.DB_NAME,
-        })
-        await client.connect();
+        // TODO
     }
 }
 

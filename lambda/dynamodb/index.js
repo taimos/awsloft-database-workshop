@@ -6,15 +6,7 @@ const dynamoClient = new AWS.DynamoDB.DocumentClient({ region: process.env.AWS_R
 async function getData() {
     const elements = [];
 
-    let token;
-    do {
-        const result = await dynamoClient.scan({
-            TableName: tableName,
-            ExclusiveStartKey: token,
-        }).promise();
-        token = result.LastEvaluatedKey;
-        elements.push(...result.Items);
-    } while (token);
+    // TODO
 
     return {
         statusCode: 200,

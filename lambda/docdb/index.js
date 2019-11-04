@@ -6,11 +6,7 @@ let client;
 async function initClient(context) {
     context.callbackWaitsForEmptyEventLoop = false;
     if (!client) {
-        const secret = await new SecretsManager().getSecretValue({ SecretId: process.env.DB_SECRET }).promise();
-        const values = JSON.parse(secret.SecretString);
-        const url = `mongodb://${values.username}:${values.password}@${process.env.DB_HOST}:${process.env.DB_PORT}/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0`
-        client = new MongoClient(url);
-        await client.connect();
+        // TODO
     }
 }
 
