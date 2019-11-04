@@ -41,12 +41,31 @@ export class ServerlessStack extends Stack {
     rdsFunction.connections.allowTo(dbStack.postgres, Port.tcp(5432));
     const rdsIntegration = new LambdaIntegration(rdsFunction);
 
+    const docdbFunction = new Function(this, 'DocDBFunction', {
+      code: Code.fromAsset(__dirname + '/../lambda/docdb'),
+      runtime: Runtime.NODEJS_10_X,
+      handler: 'index.handler',
+      environment: {
+        DB_HOST: dbStack.docCluster.attrEndpoint,
+        DB_PORT: dbStack.docCluster.attrPort,
+        DB_SECRET: dbStack.postgres.secret.secretArn,
+        DB_NAME: 'workshop',
+      },
+      vpc: dbStack.vpc,
+    });
+    dbStack.postgres.secret.grantRead(docdbFunction);
+    docdbFunction.connections.allowTo(dbStack.docSG, Port.tcp(27017));
+    const docdbIntegration = new LambdaIntegration(docdbFunction);
+
     const api = new RestApi(this, 'API');
     api.root.resourceForPath('/dynamodb').addMethod('GET', dynamodbIntegration);
     api.root.resourceForPath('/dynamodb').addMethod('POST', dynamodbIntegration);
 
     api.root.resourceForPath('/rds').addMethod('GET', rdsIntegration);
     api.root.resourceForPath('/rds').addMethod('POST', rdsIntegration);
+
+    api.root.resourceForPath('/docdb').addMethod('GET', docdbIntegration);
+    api.root.resourceForPath('/docdb').addMethod('POST', docdbIntegration);
 
   }
 }
